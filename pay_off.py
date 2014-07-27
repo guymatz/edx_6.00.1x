@@ -1,13 +1,19 @@
 #!/usr/bin/env python
 
-def calc_remaining_balance(bal, payment, apr):
-  for n in range(12):
-    bal -= payment
-    bal = bal * (1 + apr/12)
-    print("Payment %i, Bal = %0.2f : Payment = %0.2f" % (n, bal, payment) )
-
-  print
+def calc_remaining_balance_in_month(bal, payment, apr, month):
+  bal -= payment
+  bal = bal * (1 + apr/12)
+  print("Payment %i, Bal = %0.2f : Payment = %0.2f" % (month, bal, payment) )
   return bal
+
+def calc_remaining_balance_in_year(bal, payment, apr):
+
+  remaining_balance = bal
+
+  for month in range(12):
+    remaining_balance -= calc_remaining_balance_in_month(bal, payment, apr, month)
+
+  return remaining_balance
 
 def main(bal, apr):
 
@@ -21,7 +27,7 @@ def main(bal, apr):
     payment = ( hi_payment + lo_payment ) / 2
     print("lo = %0.2f, hi = %0.2f" % ( lo_payment  , hi_payment ) )
     ctr += 1
-    remaining_balance = calc_remaining_balance(bal, payment, apr)
+    remaining_balance = calc_remaining_balance_in_year(bal, payment, apr)
     if remaining_balance > 0:
       lo_payment = payment
     else:

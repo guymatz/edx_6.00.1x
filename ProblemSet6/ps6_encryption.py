@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # 6.00x Problem Set 6
 #
 # Part 1 - HAIL CAESAR!
@@ -99,8 +100,15 @@ def buildCoder(shift):
     shift: 0 <= int < 26
     returns: dict
     """
-    ### TODO.
-    return "Not yet implemented." # Remove this comment when you code the function
+    dict = {}
+    lower = string.ascii_lowercase * 2
+    upper = string.ascii_uppercase * 2
+    for n in range(len(lower)/2):
+        dict[lower[n]] = lower[n+shift]
+    for n in range(len(upper)/2):
+        dict[upper[n]] = upper[n+shift]
+    return dict
+
 
 def applyCoder(text, coder):
     """
@@ -110,8 +118,7 @@ def applyCoder(text, coder):
     coder: dict with mappings of characters to shifted characters
     returns: text after mapping coder chars to original text
     """
-    ### TODO.
-    return "Not yet implemented." # Remove this comment when you code the function
+    return ''.join([ coder[c] if c in coder.keys() else c for c in text ])
 
 def applyShift(text, shift):
     """
@@ -124,9 +131,8 @@ def applyShift(text, shift):
     shift: amount to shift the text (0 <= int < 26)
     returns: text after being shifted by specified amount.
     """
-    ### TODO.
-    ### HINT: This is a wrapper function.
-    return "Not yet implemented." # Remove this comment when you code the function
+    coder = buildCoder(shift)
+    return applyCoder(text, coder)
 
 #
 # Problem 2: Decryption
@@ -138,8 +144,24 @@ def findBestShift(wordList, text):
     text: string
     returns: 0 <= int < 26
     """
-    ### TODO
-    return "Not yet implemented." # Remove this comment when you code the function
+    import string
+    best_shift = 0
+    max_words = 0
+    #get rid of non-ascii char
+    text = ''.join(map(lambda x: x if x.isalpha() else ' ' , text))
+    # loop through range of 26 chars and find the best match
+    for n in range(26):
+        decoded_text = applyShift(text, n)
+        real_words = 0
+        #print("decided_text = %s" % decoded_text)
+        for word in decoded_text.lower().split():
+            if word in wordList:
+                real_words += 1
+        if real_words > max_words:
+            max_words = real_words
+            best_shift = n
+
+    return best_shift
 
 def decryptStory():
     """
@@ -150,8 +172,10 @@ def decryptStory():
 
     returns: string - story in plain text
     """
-    ### TODO.
-    return "Not yet implemented." # Remove this comment when you code the function
+    story = getStoryString()
+    wordList = loadWords()
+    shift = findBestShift(wordList, story)
+    return applyShift(story, shift)
 
 #
 # Build data structures used for entire session and run encryption
@@ -164,4 +188,4 @@ if __name__ == '__main__':
     bestShift = findBestShift(wordList, s)
     assert applyShift(s, bestShift) == 'Hello, world!'
     # To test decryptStory, comment the above four lines and uncomment this line:
-    #    decryptStory()
+    print decryptStory()
