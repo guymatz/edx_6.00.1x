@@ -12,11 +12,6 @@ from Tkinter import *
 #
 # Problem Set 7
 
-#======================
-# Code for retrieving and parsing RSS feeds
-# Do not change this code
-#======================
-
 def process(url):
     """
     Fetches news items from the rss url and parses them.
@@ -44,16 +39,47 @@ def process(url):
 # Data structure design
 #======================
 
-# Problem 1
+class NewsStory():
 
-# TODO: NewsStory
+    def __init__(self, guid, title, subject, summary, link):
+        self.guid = guid
+        self.ttl = title
+        self.subj = subject
+        self.summ = summary
+        self.link = link
+    
+    def getGuid(self):
+        return self.guid
+        
+    def getTitle(self):
+        return self.ttl
+        
+    def getSubject(self):
+        return self.subj
+        
+    def getSummary(self):
+        return self.summ
+        
+    def getLink(self):
+        return self.link
 
 #======================
 # Part 2
 # Triggers
 #======================
 
+#class NewNewsStory(NewsStory):
+#    def __init__(self, guid, title, subject, summary, link, date):
+#        NewsStory.__init__(self, guid, title, subject, summary, link)
+#        self.date= date
+ 
 class Trigger(object):
+    def __init__(self, search_word):
+        """
+        return an object initialiazed with word to search for
+        """
+        self.search_word = search_word.lower()
+        
     def evaluate(self, story):
         """
         Returns True if an alert should be generated
@@ -61,13 +87,52 @@ class Trigger(object):
         """
         raise NotImplementedError
 
-# Whole Word Triggers
-# Problems 2-5
+class WordTrigger(Trigger):
+    def __init__(self, search_word):
+        Trigger.__init__(self, search_word)
+        
+    def evaluate(self, story):
+        """
+        Returns True if an alert should be generated
+        for the given news item, or False otherwise.
+        """
+        raise NotImplementedError
+        
+    def cleanse(self, story):
+        """
+        return story suitable for string matching,
+        i.e. cleansed of punctuation, and in all
+        lower case
+        """
+        return ''.join([x for x in story if x not in string.punctuation]).lower()
+    
+class TitleTrigger(WordTrigger):
+    def __init__(self, search_word):
+        WordTrigger.__init__(self,search_word)
+        
+    def evaluate(self, story):
+        """
+        Returns true if word is in title
+        """
+        scrubbed_title = self.cleanse(story.getTitle())
+        return self.search_word in scrubbed_title
+        
+class SubjectTrigger(WordTrigger):
+    def __init__(self, search_word):
+        WordTrigger.__init__(self, search_word)
+        
+    def evaluate(self, story):
+        scrubbed_subject = cleanse(story.getSubject())
+        return search_word(scrubbed_subject)
+        
+class SummaryTrigger(WordTrigger):
+    def __init__(self, search_word):
+        WordTrigger.__init__(self, search_word)
+        
+    def evaluate(self, story):
+        scrubbed_summary= cleanse(story.getSummary())
+        return search_word(scrubbed_summary)
 
-# TODO: WordTrigger
-
-# TODO: TitleTrigger
-# TODO: SubjectTrigger
 # TODO: SummaryTrigger
 
 
