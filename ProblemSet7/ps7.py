@@ -40,26 +40,20 @@ def process(url):
 #======================
 
 class NewsStory():
-
     def __init__(self, guid, title, subject, summary, link):
         self.guid = guid
         self.ttl = title
         self.subj = subject
         self.summ = summary
         self.link = link
-    
     def getGuid(self):
         return self.guid
-        
     def getTitle(self):
         return self.ttl
-        
     def getSubject(self):
         return self.subj
-        
     def getSummary(self):
         return self.summ
-        
     def getLink(self):
         return self.link
 
@@ -79,7 +73,6 @@ class Trigger(object):
         return an object initialiazed with word to search for
         """
         self.search_word = search_word.lower()
-        
     def evaluate(self, story):
         """
         Returns True if an alert should be generated
@@ -90,26 +83,17 @@ class Trigger(object):
 class WordTrigger(Trigger):
     def __init__(self, search_word):
         Trigger.__init__(self, search_word)
-        
-    def evaluate(self, story):
-        """
-        Returns True if an alert should be generated
-        for the given news item, or False otherwise.
-        """
-        raise NotImplementedError
-        
     def cleanse(self, story):
         """
         return story suitable for string matching,
         i.e. cleansed of punctuation, and in all
         lower case
         """
-        return ''.join([x for x in story if x not in string.punctuation]).lower()
+        return ''.join([x if x not in string.punctuation else ' ' for x in story ]).lower().split()
     
 class TitleTrigger(WordTrigger):
     def __init__(self, search_word):
         WordTrigger.__init__(self,search_word)
-        
     def evaluate(self, story):
         """
         Returns true if word is in title
@@ -120,21 +104,16 @@ class TitleTrigger(WordTrigger):
 class SubjectTrigger(WordTrigger):
     def __init__(self, search_word):
         WordTrigger.__init__(self, search_word)
-        
     def evaluate(self, story):
-        scrubbed_subject = cleanse(story.getSubject())
-        return search_word(scrubbed_subject)
+        scrubbed_subject = self.cleanse(story.getSubject())
+        return self.search_word in scrubbed_subject
         
 class SummaryTrigger(WordTrigger):
     def __init__(self, search_word):
         WordTrigger.__init__(self, search_word)
-        
     def evaluate(self, story):
-        scrubbed_summary= cleanse(story.getSummary())
-        return search_word(scrubbed_summary)
-
-# TODO: SummaryTrigger
-
+        scrubbed_summary= self.cleanse(story.getSummary())
+        return self.search_word in scrubbed_summary
 
 # Composite Triggers
 # Problems 6-8
