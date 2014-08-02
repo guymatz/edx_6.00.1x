@@ -68,11 +68,11 @@ class NewsStory():
 #        self.date= date
  
 class Trigger(object):
-    def __init__(self, search_word):
+    def __init__(self):
         """
         return an object initialiazed with word to search for
         """
-        self.search_word = search_word.lower()
+        pass
     def evaluate(self, story):
         """
         Returns True if an alert should be generated
@@ -82,7 +82,8 @@ class Trigger(object):
 
 class WordTrigger(Trigger):
     def __init__(self, search_word):
-        Trigger.__init__(self, search_word)
+        Trigger.__init__(self)
+        self.search_word = search_word.lower()
     def cleanse(self, story):
         """
         return story suitable for string matching,
@@ -90,7 +91,10 @@ class WordTrigger(Trigger):
         lower case
         """
         return ''.join([x if x not in string.punctuation else ' ' for x in story ]).lower().split()
-    
+    def isWordIn(self, text):
+        #print(self.search_word, text)
+        return self.search_word in text
+        
 class TitleTrigger(WordTrigger):
     def __init__(self, search_word):
         WordTrigger.__init__(self,search_word)
@@ -99,29 +103,41 @@ class TitleTrigger(WordTrigger):
         Returns true if word is in title
         """
         scrubbed_title = self.cleanse(story.getTitle())
-        return self.search_word in scrubbed_title
+        return self.isWordIn(scrubbed_title)
         
 class SubjectTrigger(WordTrigger):
     def __init__(self, search_word):
         WordTrigger.__init__(self, search_word)
     def evaluate(self, story):
         scrubbed_subject = self.cleanse(story.getSubject())
-        return self.search_word in scrubbed_subject
+        return self.isWordIn(scrubbed_subject)
         
 class SummaryTrigger(WordTrigger):
     def __init__(self, search_word):
         WordTrigger.__init__(self, search_word)
     def evaluate(self, story):
         scrubbed_summary= self.cleanse(story.getSummary())
-        return self.search_word in scrubbed_summary
+        return self.isWordIn(scrubbed_summary)
 
-# Composite Triggers
-# Problems 6-8
-
-# TODO: NotTrigger
-# TODO: AndTrigger
-# TODO: OrTrigger
-
+class NotTrigger(Trigger):
+    def __init__(self, trigger):
+        self.trigger = trigger
+    def evaluate(self, story):
+        return not self.trigger.evaluate(story)
+    
+class AndTrigger(Trigger):
+    def __init__(self, t1, t2):
+        self.t1 = t1
+        self.t2 = t2
+    def evaluate(self, story):
+        return self.t1.evaluate(story) and self.t2.evaluate(story)
+        
+class OrTrigger(Trigger):
+    def __init__(self, t1, t2):
+        self.t1 = t1
+        self.t2 = t2
+    def evaluate(self, story):
+        return self.t1.evaluate(story) or self.t2.evaluate(story)
 
 # Phrase Trigger
 # Question 9
