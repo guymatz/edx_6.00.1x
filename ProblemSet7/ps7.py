@@ -139,7 +139,13 @@ class OrTrigger(Trigger):
     def evaluate(self, story):
         return self.t1.evaluate(story) or self.t2.evaluate(story)
 
-# Phrase Trigger
+class PhraseTrigger(Trigger):
+    def __init__(self, phrase):
+        Trigger.__init__(self)
+        self.phrase = phrase
+    def evaluate(self, story):
+        return self.phrase in story.getTitle() or self.phrase in story.getSubject() or self.phrase in story.getSummary()
+        
 # Question 9
 
 # TODO: PhraseTrigger
@@ -156,9 +162,15 @@ def filterStories(stories, triggerlist):
 
     Returns: a list of only the stories for which a trigger in triggerlist fires.
     """
-    # TODO: Problem 10
-    # This is a placeholder (we're just returning all the stories, with no filtering) 
-    return stories
+    filtered_stories = []
+    for s in stories:
+        if s in filtered_stories:
+            continue
+        for t in triggerlist:
+            if t.evaluate(s):
+                filtered_stories.append(s)
+                break
+    return filtered_stories
 
 #======================
 # Part 4
@@ -180,7 +192,9 @@ def makeTrigger(triggerMap, triggerType, params, name):
 
     Returns a new instance of a trigger (ex: TitleTrigger, AndTrigger).
     """
-    # TODO: Problem 11
+    print(str(triggerMap), str(triggerType), str(params), str(name))
+    t = triggerMap[triggerType](params)
+    return t
 
 
 def readTriggerConfig(filename):
