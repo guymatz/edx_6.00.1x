@@ -6,6 +6,7 @@ import string
 import time
 from project_util import translate_html
 from Tkinter import *
+import pdb
 
 
 #-----------------------------------------------------------------------
@@ -168,8 +169,12 @@ def filterStories(stories, triggerlist):
 
     Returns: a list of only the stories for which a trigger in triggerlist fires.
     """
+    #pdb.set_trace()
     filtered_stories = []
     for s in stories:
+        print s.getTitle()
+        print("\t%s" % s.getSubject())
+        print("\t%s" % s.getSummary())
         if s in filtered_stories:
             continue
         for t in triggerlist:
@@ -198,6 +203,10 @@ def makeTrigger(triggerMap, triggerType, params, name):
 
     Returns a new instance of a trigger (ex: TitleTrigger, AndTrigger).
     """
+    #print("==================")
+    #print("triggerType: %s" % triggerType)
+    #print("params: %s" % params)
+    #print("name: %s" % name)
     ttype = ''
     if triggerType in ['AND','OR','NOT']:
         if triggerType == 'AND':
@@ -206,7 +215,10 @@ def makeTrigger(triggerMap, triggerType, params, name):
             ttype = OrTrigger
         elif triggerType == 'NOT':
             ttype = NotTrigger
-        t = ttype(*params)
+        list_of_triggers= []
+        for t in params:
+            list_of_triggers.append(triggerMap[t])
+        t = ttype(*list_of_triggers)
     else:
         if triggerType == 'SUBJECT':
             ttype = SubjectTrigger
@@ -218,7 +230,7 @@ def makeTrigger(triggerMap, triggerType, params, name):
             ttype = PhraseTrigger
         params = ' '.join(params)
         t = ttype(params)
-    triggerMap[name] = triggerType
+    triggerMap[name] = t
     return t
 
 
@@ -278,6 +290,7 @@ def main_thread(master):
         # TODO: Problem 11
         # After implementing makeTrigger, uncomment the line below:
         triggerlist = readTriggerConfig("triggers.txt")
+        print triggerlist
 
         # **** from here down is about drawing ****
         frame = Frame(master)
@@ -310,6 +323,7 @@ def main_thread(master):
 
             print "Polling . . .",
             # Get stories from Google's Top Stories RSS news feed
+            pdb.set_trace()
             stories = process("http://news.google.com/?output=rss")
 
             # Get stories from Yahoo's Top Stories RSS news feed
