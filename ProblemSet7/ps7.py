@@ -79,6 +79,8 @@ class Trigger(object):
         for the given news item, or False otherwise.
         """
         raise NotImplementedError
+    def __str__(self):
+        return self.__class__
 
 class WordTrigger(Trigger):
     def __init__(self, search_word):
@@ -94,6 +96,8 @@ class WordTrigger(Trigger):
     def isWordIn(self, text):
         #print(self.search_word, text)
         return self.search_word in text
+    def __str__(self):
+        return self.__class__ + ": " + self.search_word
         
 class TitleTrigger(WordTrigger):
     def __init__(self, search_word):
@@ -145,6 +149,8 @@ class PhraseTrigger(Trigger):
         self.phrase = phrase
     def evaluate(self, story):
         return self.phrase in story.getTitle() or self.phrase in story.getSubject() or self.phrase in story.getSummary()
+    def __str__(self):
+        return self.type + ": " + self.phrase
         
 # Question 9
 
@@ -192,8 +198,27 @@ def makeTrigger(triggerMap, triggerType, params, name):
 
     Returns a new instance of a trigger (ex: TitleTrigger, AndTrigger).
     """
-    print(str(triggerMap), str(triggerType), str(params), str(name))
-    t = triggerMap[triggerType](params)
+    ttype = ''
+    if triggerType in ['AND','OR','NOT']:
+        if triggerType == 'AND':
+            ttype = AndTrigger
+        elif triggerType == 'OR':
+            ttype = OrTrigger
+        elif triggerType == 'NOT':
+            ttype = NotTrigger
+        t = ttype(*params)
+    else:
+        if triggerType == 'SUBJECT':
+            ttype = SubjectTrigger
+        elif triggerType == 'SUMMARY':
+            ttype = SummaryTrigger
+        elif triggerType == 'TITLE':
+            ttype = TitleTrigger
+        elif triggerType == 'PHRASE':
+            ttype = PhraseTrigger
+        params = ' '.join(params)
+        t = ttype(params)
+    triggerMap[name] = triggerType
     return t
 
 
@@ -221,40 +246,38 @@ def readTriggerConfig(filename):
     # Be sure you understand this code - we've written it for you,
     # but it's code you should be able to write yourself
     for line in lines:
-
         linesplit = line.split(" ")
-
         # Making a new trigger
         if linesplit[0] != "ADD":
             trigger = makeTrigger(triggerMap, linesplit[1],
                                   linesplit[2:], linesplit[0])
-
         # Add the triggers to the list
         else:
             for name in linesplit[1:]:
                 triggers.append(triggerMap[name])
-
     return triggers
     
 import thread
 
 SLEEPTIME = 60 #seconds -- how often we poll
 
+def main():
+    triggerlist = readTriggerConfig("triggers.txt")
 
 def main_thread(master):
     # A sample trigger list - you'll replace
     # this with something more configurable in Problem 11
     try:
         # These will probably generate a few hits...
-        t1 = TitleTrigger("Obama")
-        t2 = SubjectTrigger("Romney")
-        t3 = PhraseTrigger("Election")
-        t4 = OrTrigger(t2, t3)
-        triggerlist = [t1, t4]
+        #t1 = TitleTrigger("Obama")
+        #t2 = SubjectTrigger("Romney")
+        #t3 = PhraseTrigger("Election")
+        #t4 = OrTrigger(t2, t3)
+        #triggerlist = [t1, t4]
         
         # TODO: Problem 11
         # After implementing makeTrigger, uncomment the line below:
-        # triggerlist = readTriggerConfig("triggers.txt")
+        triggerlist = readTriggerConfig("triggers.txt")
 
         # **** from here down is about drawing ****
         frame = Frame(master)
@@ -312,4 +335,4 @@ if __name__ == '__main__':
     root.title("Some RSS parser")
     thread.start_new_thread(main_thread, (root,))
     root.mainloop()
-
+#     main()
