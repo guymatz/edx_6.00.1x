@@ -223,3 +223,20 @@ print "'e' is a", words[t], "cousin", r, "removed from 'h'"
 t, r = f.cousin("c", "q")
 print "'c' is a", words[t], "cousin", r, "removed from 'q'"
 # 'c' is a non cousin 2 removed from 'q'
+
+t, r = f.cousin("d", "g")
+print "'d' is a", words[t], "cousin", r, "removed from 'g'"
+
+t, r = f.cousin("d", "m")
+print "'d' is a", words[t], "cousin", r, "removed from 'm'"
+
+t, r = f.cousin("b", "l")
+print "'b' is a", words[t], "cousin", r, "removed from 'l'"
+
+t, r = f.cousin("o", "n")
+print "'o' is a", words[t], "cousin", r, "removed from 'n'"
+# 'o' is a zeroth cousin 0 removed from 'n'
+
+t, r = f.cousin("f", "n")
+print "'f' is a", words[t], "cousin", r, "removed from 'n'"
+# 'f' is a zeroth cousin 1 removed from 'n'
