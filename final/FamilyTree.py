@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 class Member(object):
     def __init__(self, founder):
         """ 
@@ -129,9 +130,11 @@ class Family(object):
           The absolute value of the difference between the 
           distance from each node to their common ancestor.
         """
+        #t, r = f.cousin("b", "c")
         
-        ## YOUR CODE HERE ####
-        raise NotImplementedError()
+        a_depth = 0
+        b_depth = 0
+        
 
 
 f = Family("a")
