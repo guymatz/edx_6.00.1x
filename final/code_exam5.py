@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 class courseInfo(object):
 
     def __init__(self, courseName):
@@ -28,6 +29,12 @@ class edx(object):
         for course in courses:
             self.myCourses.append(courseInfo(course))
 
+    def _get_courseID_by_name(self, course_name):
+        for c in range(len(self.myCourses)):
+            if self.myCourses[c].courseName == course_name:
+                return c
+        return None
+
     def setGrade(self, grade, course="6.01x"):
         """
         grade: integer greater than or equal to 0 and less than or equal to 100
@@ -41,7 +48,9 @@ class edx(object):
         The method does not return a value.
         """
         #   fill in code to set the grade
-        pass
+        #edX.setGrade(100)
+        if self._get_courseID_by_name(course) is not None:
+            self.myCourses[self._get_courseID_by_name(course)].setGrade(grade)
 
     def getGrade(self, course="6.02x"):
         """
@@ -53,7 +62,10 @@ class edx(object):
         If `course` was not part of the initialization, returns -1.
         """
         #   fill in code to get the grade
-        pass
+        if self._get_courseID_by_name(course) is not None:
+            return self.myCourses[self._get_courseID_by_name(course)].getGrade()
+        else:
+            return -1
 
     def setPset(self, pset, score, course="6.00x"):
         """
@@ -68,7 +80,8 @@ class edx(object):
         and no error is thrown.
         """
         #   fill in code to set the pset
-        pass
+        if self._get_courseID_by_name(course) is not None:
+            self.myCourses[self._get_courseID_by_name(course)].setPset(pset, score)
 
     def getPset(self, pset, course="6.00x"):
         """
@@ -80,7 +93,10 @@ class edx(object):
         If `course` was not part of the initialization, returns -1.
         """
         #   fill in code to get the pset
-        pass
+        if self._get_courseID_by_name(course) is not None:
+            return self.myCourses[self._get_courseID_by_name(course)].getPset(pset)
+        else:
+            return -1
 
 
 edX = edx( ["6.00x","6.01x","6.02x"] )
@@ -90,5 +106,19 @@ edX.setPset(2,90,"6.00x")
 
 edX.setGrade(100)
 
-for c in ["6.00x","6.01x","6.02x"]:
+for c in ["6.00x","6.01x","6.02x", "qwert"]:
     edX.setGrade(90,c)
+
+for c in ["6.00x","6.01x","6.02x", "qwert"]:
+    print edX.getGrade(c)
+
+
+edX = edx( ["6.00x","6.01x","6.02x"] )
+edX.setPset(2, 100,"6.02x")
+edX.setPset(2, 100,"2.01x")
+print edX.getPset(2, "6.02x")
+#100
+print edX.getPset(3, "6.02x")
+#None
+print edX.getPset(2, "2.01x")
+#-1
