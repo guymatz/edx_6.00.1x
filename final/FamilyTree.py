@@ -11,8 +11,8 @@ class Member(object):
         self.parent = None         
         self.children = []    
 
-    def __str__(self):
-        return self.name    
+#    def __str__(self):
+#        return self.name    
 
     def add_parent(self, mother):
         """
@@ -134,9 +134,23 @@ class Family(object):
         
         a_depth = 0
         b_depth = 0
+        degrees_removed = 100
+        a = self.names_to_nodes[a]
+        b = self.names_to_nodes[b]
+        #print a, b    
+        while True:
+            a = a.get_parent()
+            if not a:
+                break
+            a_depth += 1
+        while True:
+            b = b.get_parent()
+            if not b:
+                break
+            b_depth += 1
+        degrees_removed = abs(a_depth -b_depth)
+        print degrees_removed
         
-
-
 f = Family("a")
 f.set_children("a", ["b", "c"])
 f.set_children("b", ["d", "e"])
