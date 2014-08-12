@@ -133,9 +133,9 @@ class Family(object):
         #t, r = f.cousin("b", "c")
         
         a_depth = 0
-        a_lineage = []
+        a_lineage = [a]
         b_depth = 0
-        b_lineage = []
+        b_lineage = [b]
         a_original = a
         b_original = b
         a = self.names_to_nodes[a]
@@ -159,9 +159,10 @@ class Family(object):
         print ' '.join(b_lineage)
         if a_original == b_original:
             return -1, degrees_removed
-        if b in a_lineage or a in b_lineage:
+        if b_original in a_lineage or a_original in b_lineage:
+            print "In Lineage"
             return -1, degrees_removed
-        return (max(len(a_lineage), len(b_lineage))- degrees_removed-1), degrees_removed
+        return (max(len(a_lineage), len(b_lineage))- degrees_removed-2), degrees_removed
         
 f = Family("a")
 f.set_children("a", ["b", "c"])
@@ -214,3 +215,11 @@ print "'d' is a", words[t], "cousin", r, "removed from 'm'"
 
 t, r = f.cousin("b", "l")
 print "'b' is a", words[t], "cousin", r, "removed from 'l'"
+
+t, r = f.cousin("e", "h")
+print "'e' is a", words[t], "cousin", r, "removed from 'h'"
+# 'e' is a zeroth cousin 1 removed from 'h'
+
+t, r = f.cousin("c", "q")
+print "'c' is a", words[t], "cousin", r, "removed from 'q'"
+# 'c' is a non cousin 2 removed from 'q'
