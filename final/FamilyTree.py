@@ -133,8 +133,11 @@ class Family(object):
         #t, r = f.cousin("b", "c")
         
         a_depth = 0
+        a_lineage = []
         b_depth = 0
-        degrees_removed = 100
+        b_lineage = []
+        a_original = a
+        b_original = b
         a = self.names_to_nodes[a]
         b = self.names_to_nodes[b]
         #print a, b    
@@ -142,14 +145,23 @@ class Family(object):
             a = a.get_parent()
             if not a:
                 break
+            a_lineage.append(a.name)
             a_depth += 1
         while True:
             b = b.get_parent()
             if not b:
                 break
+            b_lineage.append(b.name)
             b_depth += 1
         degrees_removed = abs(a_depth -b_depth)
-        print degrees_removed
+        print a_original,b_original, degrees_removed
+        print ' '.join(a_lineage)
+        print ' '.join(b_lineage)
+        if a_original == b_original:
+            return -1, degrees_removed
+        if b in a_lineage or a in b_lineage:
+            return -1, degrees_removed
+        return (max(len(a_lineage), len(b_lineage))- degrees_removed-1), degrees_removed
         
 f = Family("a")
 f.set_children("a", ["b", "c"])
@@ -193,3 +205,12 @@ print "'h' is a", words[t], "cousin", r, "removed from 'h'"
 
 t, r = f.cousin("a", "a")
 print "'a' is a", words[t], "cousin", r, "removed from 'a'"
+
+t, r = f.cousin("d", "g")
+print "'d' is a", words[t], "cousin", r, "removed from 'g'"
+
+t, r = f.cousin("d", "m")
+print "'d' is a", words[t], "cousin", r, "removed from 'm'"
+
+t, r = f.cousin("b", "l")
+print "'b' is a", words[t], "cousin", r, "removed from 'l'"
