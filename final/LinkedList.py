@@ -24,64 +24,66 @@ def insert(atMe, newFrob):
     newFrob:  a Frob with no links
     This procedure appropriately inserts newFrob into the linked list that atMe is a part of.    
     """
-    #print("Inserting %s & %s" % (atMe.myName() ,newFrob.myName() ) )
-    #print("A")
-    if atMe.getBefore() is None and atMe.getAfter() is None:
-        #print("A")
-        if newFrob.myName() < atMe.myName():
-            #print("%s < %s" % ( newFrob.myName(), atMe.myName() ))
-            newFrob.setAfter(atMe)
-            atMe.setBefore(newFrob)
-        else:
-            #print("%s > %s" % ( newFrob.myName(), atMe.myName() ))
-            atMe.setAfter(newFrob)
-            newFrob.setBefore(atMe)
+    print("Inserting %s on %s" % (newFrob.myName(), atMe.myName())  )
+    print("A")
+    if newFrob.myName() == atMe.myName():
+        print("A")
+        atMe.setBefore(newFrob)
+        newFrob.setAfter(atMe)
         return
     
-#    #print("Z")
-#    #print atMe.myName() ,newFrob.myName()
-#    if atMe.myName() == newFrob.myName():
-#        #print("Z.2")
-#        atMeBefore = atMe.getBefore()
-#        if atMe.getBefore():
-#            atMeBefore.setAfter(newFrob)
-#            newFrob.setBefore(atMeBefore)
-#        atMe.setBefore(newFrob)
-#        newFrob.setAfter(atMe)
-#        return
-        
-    #print("B")
+    print("B")
     #print atMe.getBefore() ,newFrob.myName() , atMe.myName()
     if atMe.getBefore() is None and newFrob.myName() < atMe.myName():
-        #print("B")
+        print("B")
         atMe.setBefore(newFrob)
         newFrob.setAfter(atMe)
         return
             
-    #print("C")
+    print("C")
     if atMe.getAfter() is None and newFrob.myName() > atMe.myName():
-        #print("C")
+        print("C")
         atMe.setAfter(newFrob)
         newFrob.setBefore(atMe)
         return
     
-    #print("D")
-    if newFrob.myName() > atMe.myName() and newFrob.myName() > atMe.getAfter().myName():
-        #print("D")
-        insert(atMe.getAfter(), newFrob)
-        return
-    
-    #print("E")
-    if newFrob.myName() < atMe.myName() and newFrob.myName() < atMe.getBefore().myName():
-        #print("E")
-        insert(atMe.getBefore(), newFrob)
-        return
+    print("D")
+    if newFrob.myName() > atMe.myName():
+        print("D")
+        if newFrob.myName() > atMe.getAfter().myName():
+            print("D1")
+            insert(atMe.getAfter(), newFrob)
+            return
+        else:
+            print("D2")
+            tmp = atMe.getAfter()
+            atMe.setAfter(newFrob)
+            newFrob.setBefore(atMe)
+            tmp.setBefore(newFrob)
+            newFrob.setAfter(tmp)
+            return
+        
+    print("E")
+    if newFrob.myName() < atMe.myName(): 
+        print("E")
+        if newFrob.myName() < atMe.getBefore().myName():
+            print("E1")
+            insert(atMe.getBefore(), newFrob)
+            return
+        else:
+            print("E2")
+            tmp = atMe.getBefore()
+            atMe.setBefore(newFrob)
+            newFrob.setAfter(atMe)
+            tmp.setAfter(newFrob)
+            newFrob.setBefore(tmp)
+            return
         
     
-    #print("F")
+    print("F")
     #print "Before F: ", atMe.myName() , newFrob.myName() 
     if atMe.getAfter() and (atMe.myName() >= newFrob.myName() >= atMe.getAfter().myName()):
-        #print("F")
+        print("F")
         afterAtme = atMe.getAfter()
         atMe.setAfter(newFrob)
         newFrob.setBefore(atMe)
@@ -89,9 +91,9 @@ def insert(atMe, newFrob):
         afterAtme.setBefore(newFrob)
         return
         
-    #print("G")
+    print("G")
     if atMe.getBefore() and (atMe.getBefore().myName() <= newFrob.myName() <= atMe.myName()):
-        #print("G")
+        print("G")
         beforeAtme = atMe.getBefore()
         atMe.setBefore(newFrob)
         newFrob.setAfter(atMe)
@@ -101,7 +103,7 @@ def insert(atMe, newFrob):
     #print("Abandoning %s & %s" % (atMe.myName() ,newFrob.myName() ) )
     
 def findFront(frob):
-    print("Checking %s" % frob.myName())
+    #print("Checking %s" % frob.myName())
     #print("Previous is %s" % frob.getBefore())
     if frob.getBefore() is None:
         #print("Returning %s" % frob.myName())
@@ -127,19 +129,31 @@ beto = Frob('beto')
 beto2 = Frob('beto')
 abby = Frob('abby')
 abby2 = Frob('abby')
-insert(xander, beto)
-insert(xander, abby)
-insert(xander, abby2)
-insert(xander, beto2)
 
-p = Frob('percival')
-r = Frob('rupert')
-insert(p, r)
 
-print findFront(p)
-print findFront(r)
+#insert(xander, beto)
+#insert(xander, abby)
+#insert(xander, abby2)
+#insert(xander, beto2)
 
-#next_elem = xander
-#while next_elem:
-# print next_elem.myName()
-# next_elem = next_elem.getBefore()
+#p = Frob('percival')
+#r = Frob('rupert')
+#insert(p, r)
+
+#print findFront(p)
+#print findFront(r)
+
+test_list = eric
+insert(test_list, Frob("eric2"))
+insert(test_list, Frob("chris1"))
+insert(test_list, Frob("john1"))
+insert(test_list, Frob("john2"))
+insert(test_list, Frob("chris2"))
+insert(test_list, Frob("eric3"))
+insert(test_list, Frob("john3"))
+insert(test_list, Frob("chris3"))
+
+next_elem = findFront(eric)
+while next_elem:
+ print next_elem.myName()
+ next_elem = next_elem.getAfter()
