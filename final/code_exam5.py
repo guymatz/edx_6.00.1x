@@ -1,4 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+
+
 class courseInfo(object):
 
     def __init__(self, courseName):
