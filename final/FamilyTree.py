@@ -154,15 +154,26 @@ class Family(object):
             b_lineage.append(b.name)
             b_depth += 1
         degrees_removed = abs(a_depth -b_depth)
-        print a_original,b_original, degrees_removed
-        print ' '.join(a_lineage)
-        print ' '.join(b_lineage)
         if a_original == b_original:
+            #print "Same"
             return -1, degrees_removed
         if b_original in a_lineage or a_original in b_lineage:
-            print "In Lineage"
+            #print "In Lineage"
             return -1, degrees_removed
-        return (max(len(a_lineage), len(b_lineage))- degrees_removed-2), degrees_removed
+        #a_lineage.sort()
+        #b_lineage.sort()
+        print "a = %s" % ' '.join(a_lineage)
+        print "b = %s" % ' '.join(b_lineage)
+        a_copy = a_lineage[:]
+        b_copy = b_lineage[:]
+        for a in a_copy:
+            if a in b_copy:
+                a_lineage.remove(a)
+                b_lineage.remove(a)
+        #print a_original,b_original, degrees_removed
+        #print ' '.join(a_lineage)
+        #print ' '.join(b_lineage)
+        return (min(len(a_lineage) , len(b_lineage))- 1), degrees_removed
         
 f = Family("a")
 f.set_children("a", ["b", "c"])
